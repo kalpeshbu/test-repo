@@ -267,11 +267,24 @@ having aub.ib_id=b.iBookId
 
 select b.vcTitle
 from Book b
-where b.iBookId in (select aub.ib_id
+where b.iBookId in 
+((select aub.ib_id
 from aut_book as aub
-where aub.ia_id = (select iAuthorId as x
+where aub.ia_id = (select iAuthorId
 from author
-where vcAuthorName = 'Mr.Ronald'))
+where vcAuthorName = 'Mr.Ronald')) 
+intersect 
+(select b.iBookId
+from book as b
+where b.ibookPubId = (select iPublishId
+from publisher
+where vcPublishName = 'Mr.Ronald'))
+intersect
+(select b.iBookId
+from book as b
+where b.ibookCatId = (select iCategoryId
+from category
+where vcCategoryname = 'Adventure')))
 
 
 
@@ -279,7 +292,7 @@ select * from aut_book
  delete from category
  where iCategoryId=5
 
-select* from publisher
+select* from category
  execute sp_help Book
 
  delete from publisher
